@@ -4,52 +4,60 @@
 * 
 * Description:
 * 
-*	This program create an instance of a shell
+*	This program creates an instance of a shell
 *	and allows the user to execute a number of
 *	standard shell functionality. It is written
 *	in C, designed for use in a LINUX based system.
 */
 
 #include <unistd.h>  // Various functions pertaining to the LINUX system
-#include <strings.h>
+#include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
 
 int main(void)
 {
 	// Variables to hold the result of write and read system calls for error checking
-	ssize_t output;
-	ssize_t input;
+	
+	//int output = 0;  // Variable to keep the input loop going
+	//ssize_t input;
+	
 
 	// Buffer to hold the user input
 	char inputBuff[2049];
+	char* usrInput = inputBuff;
 
 	do
 	{
 		// Send ':' to terminal to serve as the command prompt and check for error
-		output = write(1, ": ", 2);
-		if (output == -1)
+		//output = write(1, ": ", 2);
+		if (write(1, ": ", 2) == -1)
 		{
 			printf("Error output");
 			exit(1);
 		}
+		fflush(stdout);  // Sends data in stdout to the screen 
 
 		// Read user input from terminal and check for error
-		input = read(0, &inputBuff, 2048);
-		if (input == -1)
+		//input = read(0, &inputBuff, 2048);
+		if (read(0, inputBuff, 2048) == -1)
 		{
 			printf("Error read");
 			exit(1);
 		}
+		fflush(stdin);
 
+		/*
 		// Exit if the user enters exit
-		if (strcmp(&inputBuff, "exit") == 0)
+		if (strcmp(usrInput, "exit") == 0)
 		{
+			_exit(0);
 			exit(0);
 		}
+		*/
+	} while (strcmp(usrInput, "exit") != 0);  // End the input loop only if the user prompt has an error
 
-	} while (output != -1);  // End the input loop only if the user prompt has an error
-
-	exit(1);
+	_exit(0);
+	return 0;
 }
 
