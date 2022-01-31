@@ -45,7 +45,8 @@ int main(void)
 			printf("Error read");
 			exit(1);
 		}
-		fflush(stdin);
+		printf("%s", usrInput);
+		//fflush(stdin);
 
 		/*
 		// Exit if the user enters exit
@@ -57,7 +58,19 @@ int main(void)
 		*/
 	} while (strcmp(usrInput, "exit") != 0);  // End the input loop only if the user prompt has an error
 
-	_exit(0);
-	return 0;
+	// Close stdin and stdout file descriptors before exiting program
+	if (close(0) == -1)
+	{
+		printf("Error close stdin");
+		exit(1);
+	}
+
+	if (close(1) == -1)
+	{
+		printf("Error clost stdout");
+		exit(1)
+	}
+
+	exit(0);
 }
 
