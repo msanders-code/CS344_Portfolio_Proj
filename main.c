@@ -14,19 +14,18 @@
 #include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
+//#include "structcommand.h"
+
 
 int main(void)
 {
-	// Variables to hold the result of write and read system calls for error checking
-	
-	//int output = 0;  // Variable to keep the input loop going
-	//ssize_t input;
-	
 
 	// Buffer to hold the user input
-	char inputBuff[2049];
-	char* usrInput = inputBuff;
+	char* usrInput = malloc(sizeof(char));
 	int test;
+
+	// Variable to hold a new command struct
+	//struct command* userCommand;
 
 	do
 	{
@@ -39,23 +38,15 @@ int main(void)
 		}
 		fflush(stdout);  // Sends data in stdout to the screen 
 
+		usrInput = calloc(2049, sizeof(char));
 		// Read user input from terminal and check for error
 		//input = read(0, &inputBuff, 2048);
-		if (read(0, inputBuff, 2048) == -1)
+		if (read(0, usrInput, 2048) == -1)
 		{
 			printf("Error read");
 			exit(1);
 		}
-		//fflush(stdin);
-
-		/*
-		// Exit if the user enters exit
-		if (strcmp(usrInput, "exit") == 0)
-		{
-			_exit(0);
-			exit(0);
-		}
-		*/
+		
 	} while (strcmp(usrInput, "exit") != 0);  // End the input loop only if the user prompt has an error
 
 	// Close stdin and stdout file descriptors before exiting program
