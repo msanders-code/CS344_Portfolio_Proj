@@ -26,6 +26,7 @@ int main(void)
 	// Buffer to hold the user input
 	char inputBuff[2049];
 	char* usrInput = inputBuff;
+	int test;
 
 	do
 	{
@@ -45,7 +46,6 @@ int main(void)
 			printf("Error read");
 			exit(1);
 		}
-		printf("%s", usrInput);
 		//fflush(stdin);
 
 		/*
@@ -68,7 +68,7 @@ int main(void)
 	if (close(1) == -1)
 	{
 		printf("Error clost stdout");
-		exit(1)
+		exit(1);
 	}
 
 	exit(0);
