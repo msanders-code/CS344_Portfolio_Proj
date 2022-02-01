@@ -14,7 +14,7 @@
 #include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
-//#include "structcommand.h"
+#include "structcommand.h"
 
 
 int main(void)
@@ -23,8 +23,8 @@ int main(void)
 	// Buffer to hold the user input
 	char* usrInput = malloc(sizeof(char));
 
-	// Variable to hold a new command struct
-	//struct command* userCommand;
+	//Variable to hold a new command struct
+	struct command* userCommand;
 
 	do
 	{
@@ -46,6 +46,19 @@ int main(void)
 			exit(1);
 		}
 		
+		// Checks input for exit command
+		if (strcmp(usrInput, "exit\n") != 0)
+		{
+			// Check for a blank line or a comment
+			if (strcmp(usrInput, " \n") != 0 || strncmp(usrInput, "#", 1) != 0)
+			{
+				userCommand = parseCommand(usrInput);
+
+				//test
+				printf("user command: %s\n", userCommand->cmd);
+				//
+			}
+		}
 
 	} while (strcmp(usrInput, "exit\n") != 0);  // End the input loop only if the user prompt has an error
 

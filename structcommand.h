@@ -5,11 +5,12 @@
 struct command
 {
 	char* cmd;
-	char* arguments[512];
+	char* arguments;
 	char* inputFile;
 	char* outputFile;
 	char* backGround;
 };
 
+struct command* parseCommand(char* command);
 
 #endif
