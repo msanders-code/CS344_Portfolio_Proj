@@ -5,9 +5,9 @@
 struct command
 {
 	char* cmd;
-	char* arguments;
-	char* fileOne;
-	char* fileTwo;
+	char* arguments[512];
+	char* inputFile;
+	char* outputFile;
 	char* backGround;
 };
 
