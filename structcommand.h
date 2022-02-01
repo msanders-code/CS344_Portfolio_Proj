@@ -5,7 +5,7 @@
 struct command
 {
 	char* cmd;
-	char* arguments;
+	char* arguments[512];
 	char* inputFile;
 	char* outputFile;
 	char* backGround;

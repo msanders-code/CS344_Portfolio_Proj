@@ -45,18 +45,15 @@ int main(void)
 			fflush(stdout);
 			exit(1);
 		}
-		
+
 		// Checks input for exit command
-		if (strcmp(usrInput, "exit\n") != 0)
+		if (strcmp(usrInput, "exit\n") != 0 && strcmp(usrInput, "\n") != 0)
 		{
 			// Check for a blank line or a comment
-			if (strcmp(usrInput, " \n") != 0 || strncmp(usrInput, "#", 1) != 0)
+			if (strncmp(usrInput, "#", 1) != 0)
 			{
+				// Parse command information into a struct
 				userCommand = parseCommand(usrInput);
-
-				//test
-				printf("user command: %s\n", userCommand->cmd);
-				//
 			}
 		}
 
@@ -72,7 +69,7 @@ int main(void)
 
 	if (close(1) == -1)
 	{
-		printf("Error clost stdout");
+		printf("Error close stdout");
 		fflush(stdout);
 		exit(1);
 	}

@@ -11,8 +11,7 @@ struct command* parseCommand(char* command)
 	// variable to move through the argument array
 	int index = 0;
 
-	// Initialize all struct members except for 'cmd' to NULL
-	memset(newCommandLine->arguments, 0, 512 * sizeof(char));
+	// Initialize all struct members except for 'cmd' and 'arguments' to NULL
 	newCommandLine->inputFile = NULL;
 	newCommandLine->outputFile = NULL;
 	newCommandLine->backGround = NULL;
@@ -49,7 +48,7 @@ struct command* parseCommand(char* command)
 		else
 		{
 			// Add argument to argument array in structure
-			strcpy((newCommandLine->arguments)[index], token);
+			newCommandLine->arguments[index] = token;
 			index++;
 		}
 	}
