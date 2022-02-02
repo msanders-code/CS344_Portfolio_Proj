@@ -23,9 +23,6 @@ int main(void)
 	// Buffer to hold the user input
 	char* usrInput = malloc(sizeof(char));
 
-	//Variable to hold a new command struct
-	//struct command* userCommand;
-
 	do
 	{
 		// Send ':' to terminal to serve as the command prompt and check for error
@@ -73,8 +70,7 @@ int main(void)
 		fflush(stdout);
 		exit(1);
 	}
-	
-	free(usrInput);  // Free the memory allocated for input
+
 	exit(0);
 }
 
