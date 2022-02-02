@@ -4,27 +4,6 @@
 #include <string.h>
 #include "builtin.h"
 
-#define SIZE 4096
-
-//testing
-void printChDir(void)
-{
-	char* pathName = malloc(sizeof(char));
-	pathName = calloc(SIZE, sizeof(char));
-
-	// Get the current working directory
-	if (getcwd(pathName, SIZE) == NULL)
-	{
-		printf("Error getcwd()");
-	}
-	else
-	{
-		printf("%s\n", pathName);
-	}
-	fflush(stdout);
-	free(pathName);
-}
-//
 
 // Changes the smallsh working directory
 void changeDir(char* dirPath)
@@ -34,15 +13,13 @@ void changeDir(char* dirPath)
 	switch (strcmp(dirPath, "HOME"))
 	{
 	case 0:
-		// change to directory specified in HOME env var
-
+		// Change current working directory to directory specified in HOME environment variable
 		if ((homeDir = getenv("HOME")) == NULL)
 		{
 			printf("Error get home directory");
 			fflush(stdout);
 		}
 
-		// Change current working directory to HOME directory
 		if (chdir(homeDir) != 0)
 		{
 			printf("Error chdir");
@@ -60,9 +37,4 @@ void changeDir(char* dirPath)
 		break;
 
 	}
-	
-
-	//test
-	printChDir();
-	//
 }
