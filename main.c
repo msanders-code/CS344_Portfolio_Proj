@@ -14,7 +14,7 @@
 #include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include "structcommand.h"
+#include "commandstruct.h"
 
 
 int main(void)
@@ -24,7 +24,7 @@ int main(void)
 	char* usrInput = malloc(sizeof(char));
 
 	//Variable to hold a new command struct
-	struct command* userCommand;
+	//struct command* userCommand;
 
 	do
 	{
@@ -53,7 +53,7 @@ int main(void)
 			if (strncmp(usrInput, "#", 1) != 0)
 			{
 				// Parse command information into a struct
-				userCommand = parseCommand(usrInput);
+				parseCommand(usrInput);
 			}
 		}
 

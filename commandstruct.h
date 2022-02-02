@@ -1,5 +1,5 @@
-#ifndef STRUCT_COMMAND_H
-#define STRUCT_COMMAND_H
+#ifndef COMMAND_STRUCT_H
+#define COMMAND_STRUCT_H
 
 // Structure definition to parse a command 
 struct command
@@ -11,6 +11,6 @@ struct command
 	char* backGround;
 };
 
-struct command* parseCommand(char* command);
+void parseCommand(char* command);
 
 #endif
