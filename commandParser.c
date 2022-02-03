@@ -5,11 +5,12 @@
 #include <stdio.h>
 #include "commandstruct.h"
 #include "builtin.h"
+#include "cmd.h"
 
 
 #define LEN 50 // Defines compound string length
 
-/*
+
 //for testing
 void structPrint(struct command* newStruct)
 {
@@ -33,7 +34,7 @@ void structPrint(struct command* newStruct)
 	fflush(stdout);
 }
 //
-*/
+
 
 // Function to perform variable expansion
 void argVarExpansion(char* argumentStr, struct command* structure, int index)
@@ -168,7 +169,7 @@ void argVarExpansion(char* argumentStr, struct command* structure, int index)
 }
 
 // Function to perform variable expansion
-void cmdVarExpansion(char* commandStr, struct command* structure)
+void cmdVarExpansion(char* commandStr, struct command* structure, int index)
 {
 	// Get smallsh process PID to facilitate variable expansion for '$$' in command
 	int processID = (int)getpid();
@@ -208,6 +209,10 @@ void cmdVarExpansion(char* commandStr, struct command* structure)
 
 		structure->cmd= calloc(strlen(expanded) + 1, sizeof(char));
 		strcpy(structure->cmd, expanded);
+
+		// Add command to argument array for use in a new process later
+		structure->arguments[index] = calloc(strlen(expanded) + 1, sizeof(char));
+		strcpy(structure->cmd, expanded);
 		break;
 
 	case 1:
@@ -227,6 +232,10 @@ void cmdVarExpansion(char* commandStr, struct command* structure)
 		sprintf(expanded, "%s$", prefix);
 
 		structure->cmd = calloc(strlen(expanded) + 1, sizeof(char));
+		strcpy(structure->cmd, expanded);
+
+		// Add command to argument array for use in a new process later
+		structure->arguments[index] = calloc(strlen(expanded) + 1, sizeof(char));
 		strcpy(structure->cmd, expanded);
 		break;
 	}
@@ -260,14 +269,20 @@ void parseCommand(char* command)
 	*/
 	if (strstr(token, "$$"))
 	{
-		cmdVarExpansion(token, newCommandLine);
+		cmdVarExpansion(token, newCommandLine, index);
 	}
 	else
 	{
 		// Adds the command to the structure if no var. expansion necessary
 		newCommandLine->cmd = calloc(strlen(token) + 1, sizeof(char));
 		strcpy(newCommandLine->cmd, token);
+
+		// Adds the command to the frist position in the argument array to use in a new process later
+		newCommandLine->arguments[index] = calloc(strlen(token) + 1, sizeof(char));
+		strcpy(newCommandLine->arguments[index], token);
 	}
+	
+	index++;
 
 	while ((token = strtok_r(NULL, " \n", &savePtr)) != NULL)
 	{
@@ -309,19 +324,23 @@ void parseCommand(char* command)
 	}
 
 	//test
-	//structPrint(newCommandLine);
+	structPrint(newCommandLine);
 	//
 	
 	if (strcmp(newCommandLine->cmd, "cd") == 0)
 	{
-		if (newCommandLine->arguments[0] == NULL)
+		if (newCommandLine->arguments[1] == NULL)
 		{
 			changeDir("HOME");
 		}
 		else
 		{
-			changeDir(newCommandLine->arguments[0]);
+			changeDir(newCommandLine->arguments[1]);
 		}
+	}
+	else
+	{
+		runCommand(newCommandLine);
 	}
 
 	// Free structure memory block

@@ -16,13 +16,13 @@ void changeDir(char* dirPath)
 		// Change current working directory to directory specified in HOME environment variable
 		if ((homeDir = getenv("HOME")) == NULL)
 		{
-			printf("Error get home directory");
+			perror("Error get home directory");
 			fflush(stdout);
 		}
 
 		if (chdir(homeDir) != 0)
 		{
-			printf("Error chdir");
+			perror("Error chdir");
 			fflush(stdout);
 		}
 		break;
@@ -31,7 +31,7 @@ void changeDir(char* dirPath)
 		// Change current working directory to the directory specified as a command argument
 		if (chdir(dirPath) != 0)
 		{
-			printf("Error chdir");
+			perror("Error chdir");
 			fflush(stdout);
 		}
 		break;

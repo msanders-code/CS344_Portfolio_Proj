@@ -5,12 +5,13 @@
 struct command
 {
 	char* cmd;
-	char* arguments[512];
+	char* arguments[514];
 	char* inputFile;
 	char* outputFile;
 	char* backGround;
 };
 
+// Function to parse a user command line
 void parseCommand(char* command);
 
 #endif
