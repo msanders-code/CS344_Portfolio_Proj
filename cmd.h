@@ -2,8 +2,11 @@
 #define CMD_H
 #include "commandstruct.h"  // Connects to the 'struct command' definition
 
-// Function to run non-built-in commands
-void runCommand(struct command* newCommand);
+// Function to run non-built-in background commands
+void backgroundCmd(struct command* command);
+
+// Function to run non-built-in foreground commands
+void foregroundCmd(struct command* command);
 
 // Function to redirect input
 void inputRedirect(char* pathName);

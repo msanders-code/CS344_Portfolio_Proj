@@ -243,7 +243,7 @@ void cmdVarExpansion(char* commandStr, struct command* structure, int index)
 	free(prefix);
 }
 
-// Function to build a command structure
+// Function to parse the command line into a structure and call functions to execute the command
 void parseCommand(char* command)
 {
 	// Allocate space
@@ -329,6 +329,7 @@ void parseCommand(char* command)
 	//
 	*/
 	
+	// Run the parsed commands 
 	if (strcmp(newCommandLine->cmd, "cd") == 0)
 	{
 		if (newCommandLine->arguments[1] == NULL)
@@ -342,7 +343,14 @@ void parseCommand(char* command)
 	}
 	else
 	{
-		runCommand(newCommandLine);
+		if (newCommandLine->backGround != NULL)
+		{
+			backgroundCmd(newCommandLine);
+		}
+		else
+		{
+			foregroundCmd(newCommandLine);
+		}
 	}
 
 	// Free structure memory block
