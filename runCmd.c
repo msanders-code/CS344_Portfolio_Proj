@@ -10,6 +10,7 @@
 
 void runCommand(struct command* newCommand)
 {
+
 	int procStatus;  // Holds the exit status of the waitpid function
 
 	pid_t childPID;
@@ -26,56 +27,40 @@ void runCommand(struct command* newCommand)
 		break;
 
 	case 0:  //child process
-		
-		// Input and Output redirection vars that hold the fd's to be able to close them when the process ends
-		int rdIn = 0;
-		int wrOut = 0;
 
+		// Input redirction
 		if (newCommand->inputFile != NULL && newCommand->outputFile != NULL)
 		{
-			rdIn = inputRedirect(newCommand->inputFile);
-			wrOut = outputRedirect(newCommand->outputFile);
+			inputRedirect(newCommand->inputFile);
+			outputRedirect(newCommand->outputFile);
 		}
 		else if (newCommand->inputFile != NULL && newCommand->outputFile == NULL)
 		{
-			rdIn = inputRedirect(newCommand->inputFile);
+			inputRedirect(newCommand->inputFile);
 
 			if (newCommand->backGround != NULL)
 			{
-				wrOut = outputRedirect("/dev/null");
+				outputRedirect("/dev/null");
 			}
 
 		}
 		else if (newCommand->inputFile == NULL && newCommand->outputFile != NULL)
 		{
-			wrOut = outputRedirect(newCommand->outputFile);
+			outputRedirect(newCommand->outputFile);
 
 			if (newCommand->backGround != NULL)
 			{
-				rdIn = inputRedirect("/dev/null");
+				inputRedirect("/dev/null");
 			}
 		}
 		else if (newCommand->backGround != NULL)
 		{
-			rdIn = inputRedirect("/dev/null");
-			wrOut = outputRedirect("/dev/null");
+			inputRedirect("/dev/null");
+			outputRedirect("/dev/null");
 		}
 
+		// Run input command from a program in the PATH environment variable
 		execvp(newCommand->cmd, newCommand->arguments);
-		
-		/*
-		if (close(rdIn) == -1)
-		{
-			perror("Error close input fd %d", rdIn);
-			exit(1);
-		}
-
-		if (close(wrOut) == -1)
-		{
-			perror("Error close output fd %d", wrOut);
-			exit(1)
-		}
-		*/
 
 		break;
 

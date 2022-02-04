@@ -7,10 +7,9 @@
 
 
 // Redirects stdin to the given pathName
-int inputRedirect(char* pathName)
+void inputRedirect(char* pathName)
 {
 	int fd;
-	int rdNewfd;
 
 	/* Attempts to open the file with 'pathName' path for read only.
 	* If it fails, it prints an error message and sets the exit code to 1.
@@ -25,7 +24,7 @@ int inputRedirect(char* pathName)
 	}
 	else
 	{
-		if ((rdNewfd = dup2(fd, 0)) == -1)
+		if (dup2(fd, 0) == -1)
 		{
 			perror("Error: input redirection");
 			fflush(stdout);
@@ -35,7 +34,6 @@ int inputRedirect(char* pathName)
 		close(fd);  // Close original file descriptor
 	}
 
-	return rdNewfd;  // Return new file descriptor
 }
 
 
@@ -43,7 +41,6 @@ int inputRedirect(char* pathName)
 void outputRedirect(char* pathName)
 {
 	int fd;
-	int wrNewfd;
 
 	/* Attempts to open the file with 'pathName' path for writing only,
 	* it creates a file if it does not exist or truncates an existing
@@ -51,7 +48,7 @@ void outputRedirect(char* pathName)
 	* code to 1. If it succeeds, it redirects stdout to the file that 
 	* it just opened.
 	*/
-	if ((fd = open(pathName, O_WRONLY | O_CREAT | O_TRUNC)) == -1)
+	if ((fd = open(pathName, O_WRONLY | O_CREAT | O_TRUNC, 0660)) == -1)
 	{
 		perror("Error: Could not open file for writing");
 		fflush(stdout);
@@ -59,7 +56,7 @@ void outputRedirect(char* pathName)
 	}
 	else
 	{
-		if ((wrNewfd = dup2(fd, 1)) == -1)
+		if (dup2(fd, 1) == -1)
 		{
 			perror("Error: output redirection");
 			fflush(stdout);
@@ -69,5 +66,4 @@ void outputRedirect(char* pathName)
 		close(fd);  // Close original file descriptor
 	}
 
-	return wrNewfd;  // Return new file descriptor
 }

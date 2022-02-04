@@ -6,9 +6,9 @@
 void runCommand(struct command* newCommand);
 
 // Function to redirect input
-int inputRedirect(char* pathName);
+void inputRedirect(char* pathName);
 
 // Function to redirect output
-int outputRedirect(char* pathName);
+void outputRedirect(char* pathName);
 
 #endif

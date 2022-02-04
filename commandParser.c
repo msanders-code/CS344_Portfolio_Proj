@@ -10,7 +10,7 @@
 
 #define LEN 50 // Defines compound string length
 
-
+/*
 //for testing
 void structPrint(struct command* newStruct)
 {
@@ -34,7 +34,7 @@ void structPrint(struct command* newStruct)
 	fflush(stdout);
 }
 //
-
+*/
 
 // Function to perform variable expansion
 void argVarExpansion(char* argumentStr, struct command* structure, int index)
@@ -323,9 +323,11 @@ void parseCommand(char* command)
 		}
 	}
 
+	/*
 	//test
 	structPrint(newCommandLine);
 	//
+	*/
 	
 	if (strcmp(newCommandLine->cmd, "cd") == 0)
 	{
