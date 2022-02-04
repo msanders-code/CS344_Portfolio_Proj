@@ -13,6 +13,8 @@ void runCommand(struct command* newCommand)
 {
 	int procStatus;  // Holds the exit status of the waitpid function
 
+	pid_t childPID;
+
 	// Spawn new child process
 	pid_t spawnProc = fork();
 
@@ -38,6 +40,8 @@ void runCommand(struct command* newCommand)
 
 		if (newCommand->backGround != NULL)
 		{
+			childPID = spawnProc;  // Copies chid PID
+
 			// Print message when background process gets started
 			printf("Background PID is %d\n", spawnProc);
 			fflush(stdout);
@@ -48,12 +52,12 @@ void runCommand(struct command* newCommand)
 			// Find and print the exit status of the child process
 			if (WIFEXITED(procStatus))
 			{
-				printf("\nBackground PID %d is done. Exit Status: %d\n", spawnProc, WEXITSTATUS(procStatus));
+				printf("\nBackground PID %d is done. Exit Status: %d\n", childPID, WEXITSTATUS(procStatus));
 				fflush(stdout);
 			}
 			else
 			{
-				printf("\nBackground PID %d is done. Termination signal: %d\n", spawnProc, WTERMSIG(procStatus));
+				printf("\nBackground PID %d is done. Termination signal: %d\n", childPID, WTERMSIG(procStatus));
 				fflush(stdout);
 			}
 
