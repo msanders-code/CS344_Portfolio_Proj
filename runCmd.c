@@ -8,7 +8,6 @@
 #include "commandstruct.h"
 
 
-
 void runCommand(struct command* newCommand)
 {
 	int procStatus;  // Holds the exit status of the waitpid function
@@ -27,11 +26,55 @@ void runCommand(struct command* newCommand)
 		break;
 
 	case 0:  //child process
+		
+		// Input and Output redirection vars that hold the fd's to be able to close them when the process ends
+		int rdIn = 0;
+		int wrOut = 0;
+
+		if (newCommand->inputFile != NULL && newCommand->outputFile != NULL)
+		{
+			rdIn = inputRedirect(newCommand->inputFile);
+			wrOut = outputRedirect(newCommand->outputFile);
+		}
+		else if (newCommand->inputFile != NULL && newCommand->outputFile == NULL)
+		{
+			rdIn = inputRedirect(newCommand->inputFile);
+
+			if (newCommand->backGround != NULL)
+			{
+				wrOut = outputRedirect("/dev/null");
+			}
+
+		}
+		else if (newCommand->inputFile == NULL && newCommand->outputFile != NULL)
+		{
+			wrOut = outputRedirect(newCommand->outputFile);
+
+			if (newCommand->backGround != NULL)
+			{
+				rdIn = inputRedirect("/dev/null");
+			}
+		}
+		else if (newCommand->backGround != NULL)
+		{
+			rdIn = inputRedirect("/dev/null");
+			wrOut = outputRedirect("/dev/null");
+		}
 
 		execvp(newCommand->cmd, newCommand->arguments);
 		
 		/*
-		* need to redirect input and output for background process if not redirected by user
+		if (close(rdIn) == -1)
+		{
+			perror("Error close input fd %d", rdIn);
+			exit(1);
+		}
+
+		if (close(wrOut) == -1)
+		{
+			perror("Error close output fd %d", wrOut);
+			exit(1)
+		}
 		*/
 
 		break;
