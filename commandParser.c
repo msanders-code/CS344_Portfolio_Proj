@@ -324,7 +324,6 @@ char* parseCommand(char* command)
 			index++;
 		}
 	}
-
 	/*
 	//test
 	structPrint(newCommandLine);
