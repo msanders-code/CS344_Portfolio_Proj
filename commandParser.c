@@ -360,7 +360,7 @@ char* parseCommand(char* command)
 	}
 
 	// Free structure memory block
-	free(newCommandLine);
+	//free(newCommandLine);
 
 	return cmdStatus;
 }

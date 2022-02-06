@@ -58,7 +58,11 @@ int main(void)
 		}
 		else if (strcmp(usrInput, "status\n") == 0)
 		{
-			write(1, cmdStat, 30);
+			//write(1, cmdStat, 30);
+			
+			printf("%s", cmdStat);
+			fflush(stdout);
+			
 		}
 
 	} while (strcmp(usrInput, "exit\n") != 0);  // End the input loop only if the user prompt has an error

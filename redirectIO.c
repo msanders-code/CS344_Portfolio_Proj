@@ -18,7 +18,7 @@ void inputRedirect(char* pathName)
 	*/
 	if ((fd = open(pathName, O_RDONLY)) == -1)
 	{
-		perror("Error: Could not open file for reading");
+		printf("cannot open %s for input\n", pathName);
 		fflush(stdout);
 		exit(1);
 	}
@@ -26,7 +26,7 @@ void inputRedirect(char* pathName)
 	{
 		if (dup2(fd, 0) == -1)
 		{
-			perror("Error: input redirection");
+			perror("Error: input redirection\n");
 			fflush(stdout);
 			exit(1);
 		}
@@ -48,9 +48,9 @@ void outputRedirect(char* pathName)
 	* code to 1. If it succeeds, it redirects stdout to the file that 
 	* it just opened.
 	*/
-	if ((fd = open(pathName, O_WRONLY | O_CREAT | O_TRUNC, 0660)) == -1)
+	if ((fd = open(pathName, O_WRONLY | O_CREAT | O_TRUNC)) == -1)
 	{
-		perror("Error: Could not open file for writing");
+		printf("cannot open %s for output\n", pathName);
 		fflush(stdout);
 		exit(1);
 	}
@@ -58,7 +58,7 @@ void outputRedirect(char* pathName)
 	{
 		if (dup2(fd, 1) == -1)
 		{
-			perror("Error: output redirection");
+			perror("Error: output redirection\n");
 			fflush(stdout);
 			exit(1);
 		}

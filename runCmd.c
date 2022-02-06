@@ -14,6 +14,8 @@ void backgroundCmd(struct command* command)
 	int procStatus;  // Holds the exit status of the waitpid function
 	
 	char* usrInput = malloc(sizeof(char));
+
+	char* cmdStat = "exit value 0\n";  // String to print if status is called
 	
 	// Spawn new child process
 	pid_t spawnProc = fork();
@@ -53,7 +55,7 @@ void backgroundCmd(struct command* command)
 		// Run input command from a program in the PATH environment variable
 		if (execvp(command->cmd, command->arguments) == -1)
 		{
-			printf("%s: Command could not be found!\n", command->cmd);
+			printf("%s: no such file or directory\n", command->cmd);
 			fflush(stdout);
 			exit(1);
 		}
@@ -90,14 +92,20 @@ void backgroundCmd(struct command* command)
 			}
 
 			// Checks input for exit command
-			if (strcmp(usrInput, "exit\n") != 0 && strcmp(usrInput, "\n") != 0)
+			if (strcmp(usrInput, "exit\n") != 0 && strcmp(usrInput, "status\n") != 0)
 			{
 				// Check for a blank line or a comment
-				if (strncmp(usrInput, "#", 1) != 0)
+				if (strncmp(usrInput, "#", 1) != 0 && strcmp(usrInput, "\n") != 0)
 				{
 					// Parse command information into a struct
-					parseCommand(usrInput);
+					cmdStat = parseCommand(usrInput);
 				}
+			}
+			else if (strcmp(usrInput, "status\n") != 0)
+			{
+				//write(1, cmdStat, 30);
+				printf("%s", cmdStat);
+				fflush(stdout);
 			}
 			else if (strcmp(usrInput, "exit\n") == 0)
 			{
@@ -157,13 +165,13 @@ char* foregroundCmd(struct command* command)
 		}
 		else if (command->inputFile == NULL && command->outputFile != NULL)
 		{
-			inputRedirect("/dev/null");
+			outputRedirect(command->outputFile);
 		}
 
 		// Run input command from a program in the PATH environment variable
 		if (execvp(command->cmd, command->arguments) == -1)
 		{
-			printf("%s: Command could not be found!\n", command->cmd);
+			printf("%s: no such file or directory\n", command->cmd);
 			fflush(stdout);
 			exit(1);
 		}
@@ -178,13 +186,13 @@ char* foregroundCmd(struct command* command)
 		// Find and print the exit status of the child process
 		if (WIFEXITED(procStatus))
 		{
-			status = calloc(13, sizeof(char));
-			sprintf(status, "exit value %d\n", procStatus);
+			status = calloc(15, sizeof(char));
+			sprintf(status, "exit value %d\n", WEXITSTATUS(procStatus));
 		}
 		else if (WIFSIGNALED(procStatus))
 		{
 			status = calloc(30, sizeof(char));
-			sprintf(status, "terminated by signal %d\n", procStatus);
+			sprintf(status, "terminated by signal %d\n", WTERMSIG(procStatus));
 		}
 
 		break;
