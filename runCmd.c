@@ -12,7 +12,9 @@
 void backgroundCmd(struct command* command)
 {
 	int procStatus;  // Holds the exit status of the waitpid function
-
+	
+	char* usrInput = malloc(sizeof(char));
+	
 	// Spawn new child process
 	pid_t spawnProc = fork();
 
@@ -20,7 +22,7 @@ void backgroundCmd(struct command* command)
 	{
 	case -1:  // Fork() error
 
-		perror("Error fork()");
+		perror("Error fork()\n");
 		fflush(stdout);
 		break;
 
@@ -51,7 +53,7 @@ void backgroundCmd(struct command* command)
 		// Run input command from a program in the PATH environment variable
 		if (execvp(command->cmd, command->arguments) == -1)
 		{
-			printf("%s: Command could not be found!", command->cmd);
+			printf("%s: Command could not be found!\n", command->cmd);
 			fflush(stdout);
 			exit(1);
 		}
@@ -64,31 +66,71 @@ void backgroundCmd(struct command* command)
 		printf("Background PID is %ld\n", (long)spawnProc);
 		fflush(stdout);
 
-		// Wait for child process to terminate from running in the background
-		spawnProc = waitpid(spawnProc, &procStatus, WNOHANG);
+		int childProcess = spawnProc;
+
+		while ((spawnProc = waitpid(childProcess, &procStatus, WNOHANG)) == 0)
+		{
+
+			//Run command prompt
+			if (write(1, ": ", 2) == -1)  // Send ':' to terminal to serve as the command prompt and check for error
+			{
+				printf("Error output\n");
+				fflush(stdout);
+				exit(1);
+			}
+
+			usrInput = calloc(2049, sizeof(char));
+
+			// Read user input from terminal and check for error
+			if (read(0, usrInput, 2048) == -1)
+			{
+				printf("Error read\n");
+				fflush(stdout);
+				exit(1);
+			}
+
+			// Checks input for exit command
+			if (strcmp(usrInput, "exit\n") != 0 && strcmp(usrInput, "\n") != 0)
+			{
+				// Check for a blank line or a comment
+				if (strncmp(usrInput, "#", 1) != 0)
+				{
+					// Parse command information into a struct
+					parseCommand(usrInput);
+				}
+			}
+			else if (strcmp(usrInput, "exit\n") == 0)
+			{
+				exit(0);
+			}
+		}
+
+		// Find and print the exit status of the child process
+		if (WIFEXITED(procStatus))
+		{
+			printf("Background PID %ld is done. Exit Status: %d\n", (long)spawnProc, WEXITSTATUS(procStatus));
+			fflush(stdout);
+		}
+		else if (WIFSIGNALED(procStatus))
+		{
+			printf("Background PID %ld is done. Termination signal: %d\n", (long)spawnProc, WTERMSIG(procStatus));
+			fflush(stdout);
+		}
+
 		break;
 
 	}
 
-	// Find and print the exit status of the child process
-	if (WIFEXITED(procStatus))
-	{
-		printf("\nBackground PID %ld is done. Exit Status: %d\n", (long)spawnProc, WEXITSTATUS(procStatus));
-		fflush(stdout);
-	}
-	else if (WIFSIGNALED(procStatus))
-	{
-		printf("\nBackground PID %ld is done. Termination signal: %d\n", (long)spawnProc, WTERMSIG(procStatus));
-		fflush(stdout);
-	}
-
+	free(usrInput);
 }
 
 
 // Function to run a foreground command
-void foregroundCmd(struct command* command)
+char* foregroundCmd(struct command* command)
 {
 	int procStatus;  // Holds the exit status of the waitpid function
+
+	char* status = malloc(sizeof(char));
 
 // Spawn new child process
 	pid_t spawnProc = fork();
@@ -97,7 +139,7 @@ void foregroundCmd(struct command* command)
 	{
 	case -1:  // Fork() error
 
-		perror("Error fork()");
+		perror("Error fork()\n");
 		fflush(stdout);
 		break;
 
@@ -121,7 +163,7 @@ void foregroundCmd(struct command* command)
 		// Run input command from a program in the PATH environment variable
 		if (execvp(command->cmd, command->arguments) == -1)
 		{
-			printf("%s: Command could not be found!", command->cmd);
+			printf("%s: Command could not be found!\n", command->cmd);
 			fflush(stdout);
 			exit(1);
 		}
@@ -132,6 +174,21 @@ void foregroundCmd(struct command* command)
 
 		// Wait for child process to terminate from running in the foreground
 		spawnProc = waitpid(spawnProc, &procStatus, 0);
+
+		// Find and print the exit status of the child process
+		if (WIFEXITED(procStatus))
+		{
+			status = calloc(13, sizeof(char));
+			sprintf(status, "exit value %d\n", procStatus);
+		}
+		else if (WIFSIGNALED(procStatus))
+		{
+			status = calloc(30, sizeof(char));
+			sprintf(status, "terminated by signal %d\n", procStatus);
+		}
+
 		break;
 	}
+
+	return status;
 }

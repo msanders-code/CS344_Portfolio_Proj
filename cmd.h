@@ -6,7 +6,7 @@
 void backgroundCmd(struct command* command);
 
 // Function to run non-built-in foreground commands
-void foregroundCmd(struct command* command);
+char* foregroundCmd(struct command* command);
 
 // Function to redirect input
 void inputRedirect(char* pathName);

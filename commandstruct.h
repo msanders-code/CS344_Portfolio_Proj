@@ -12,6 +12,6 @@ struct command
 };
 
 // Function to parse a user command line
-void parseCommand(char* command);
+char* parseCommand(char* command);
 
 #endif

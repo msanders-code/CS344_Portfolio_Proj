@@ -244,10 +244,12 @@ void cmdVarExpansion(char* commandStr, struct command* structure, int index)
 }
 
 // Function to parse the command line into a structure and call functions to execute the command
-void parseCommand(char* command)
+char* parseCommand(char* command)
 {
 	// Allocate space
 	struct command* newCommandLine = malloc(sizeof(struct command));
+
+	char* cmdStatus = "exit status 0\n";  // Status to send back if a background or built-in process has run
 
 	// variable to move through the argument array
 	int index = 0;
@@ -341,6 +343,10 @@ void parseCommand(char* command)
 			changeDir(newCommandLine->arguments[1]);
 		}
 	}
+	else if (strcmp(newCommandLine->cmd, "status") == 0)
+	{
+		
+	}
 	else
 	{
 		if (newCommandLine->backGround != NULL)
@@ -349,10 +355,12 @@ void parseCommand(char* command)
 		}
 		else
 		{
-			foregroundCmd(newCommandLine);
+			cmdStatus = foregroundCmd(newCommandLine);
 		}
 	}
 
 	// Free structure memory block
 	free(newCommandLine);
+
+	return cmdStatus;
 }

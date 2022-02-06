@@ -23,6 +23,9 @@ int main(void)
 	// Buffer to hold the user input
 	char* usrInput = malloc(sizeof(char));
 
+	char* cmdStat = "exit value 0\n";
+
+	// Run command prompt
 	do
 	{
 		// Send ':' to terminal to serve as the command prompt and check for error
@@ -44,33 +47,22 @@ int main(void)
 		}
 
 		// Checks input for exit command
-		if (strcmp(usrInput, "exit\n") != 0 && strcmp(usrInput, "\n") != 0)
+		if (strcmp(usrInput, "exit\n") != 0 && strcmp(usrInput, "status\n") != 0)
 		{
 			// Check for a blank line or a comment
-			if (strncmp(usrInput, "#", 1) != 0)
+			if (strncmp(usrInput, "#", 1) != 0 && strcmp(usrInput, "\n") != 0)
 			{
 				// Parse command information into a struct
-				parseCommand(usrInput);
+				cmdStat = parseCommand(usrInput);
 			}
+		}
+		else if (strcmp(usrInput, "status\n") == 0)
+		{
+			write(1, cmdStat, 30);
 		}
 
 	} while (strcmp(usrInput, "exit\n") != 0);  // End the input loop only if the user prompt has an error
 
-	// Close stdin and stdout file descriptors before exiting program
-	if (close(0) == -1)
-	{
-		printf("Error close stdin");
-		fflush(stdout);
-		exit(1);
-	}
-
-	if (close(1) == -1)
-	{
-		printf("Error close stdout");
-		fflush(stdout);
-		exit(1);
-	}
-
-	exit(0);
+	return 0;
 }
 
