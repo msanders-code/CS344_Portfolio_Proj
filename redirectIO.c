@@ -48,7 +48,7 @@ void outputRedirect(char* pathName)
 	* code to 1. If it succeeds, it redirects stdout to the file that 
 	* it just opened.
 	*/
-	if ((fd = open(pathName, O_WRONLY | O_CREAT | O_TRUNC)) == -1)
+	if ((fd = open(pathName, O_WRONLY | O_CREAT | O_TRUNC, 0660)) == -1)
 	{
 		printf("cannot open %s for output\n", pathName);
 		fflush(stdout);

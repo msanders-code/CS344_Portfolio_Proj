@@ -1,6 +1,7 @@
 #ifndef COMMAND_STRUCT_H
 #define COMMAND_STRUCT_H
 
+
 // Structure definition to parse a command 
 struct command
 {
@@ -12,6 +13,6 @@ struct command
 };
 
 // Function to parse a user command line
-char* parseCommand(char* command);
+char* parseCommand(char* command, int mode);
 
 #endif
